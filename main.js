@@ -23,3 +23,9 @@ for (let r = 0; r < SIZE; ++r) {
         container.appendChild(cell);
     }
 }
+
+const solveSudoku = () => {
+    const sudoku = new Sudoku();
+    sudoku.loadGrid();
+    sudoku.solve();
+}
