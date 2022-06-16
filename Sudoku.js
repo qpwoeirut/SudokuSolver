@@ -181,16 +181,22 @@ class Sudoku {
             possibilities.push([]);
             for (let c = 0; c < SIZE; ++c) {
                 possibilities[r].push(new Set());
-                if (this.grid[r][c] !== UNKNOWN) {
-                    possibilities[r][c].add(this.grid[r][c]);
-                    // fillLogically(r, c, this.grid[r][c]);
-                } else {
-                    for (let n = 1; n <= SIZE; ++n) {
-                        possibilities[r][c].add(n);
-                    }
+                for (let n = 1; n <= SIZE; ++n) {
+                    possibilities[r][c].add(n);
                 }
             }
         }
+
+        for (let r = 0; r < SIZE; ++r) {
+            possibilities.push([]);
+            for (let c = 0; c < SIZE; ++c) {
+                possibilities[r].push(new Set());
+                if (this.grid[r][c] !== UNKNOWN) {
+                    fillLogically(r, c, this.grid[r][c]);
+                }
+            }
+        }
+
 
         if (!isValid()) {
             alert("Board invalid!");
