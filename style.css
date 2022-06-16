@@ -1,0 +1,43 @@
+#sudokuContainer {
+    display: grid;
+    margin: 0 auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    width: min(36rem, calc(100vmin - 16px));
+    height: min(36rem, calc(100vmin - 16px));
+    border: 1px solid black;
+}
+
+.sudoku-cell {
+    border: 1px solid black;
+    flex-grow: 1;
+}
+
+.sudoku-cell > input {
+    font-size: min(3rem, 8vmin);
+    -moz-appearance: textfield;
+    appearance: textfield;
+    width: 85%;
+    height: 85%;
+    border: none;
+    margin: 2.5%;
+    padding: 5%;
+    text-align: center;
+}
+.sudoku-cell > input::-webkit-outer-spin-button,
+.sudoku-cell > input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.bold-top {
+    border-top: 2px solid black;
+}
+.bold-left {
+    border-left: 2px solid black;
+}
+.bold-bottom {
+    border-bottom: 2px solid black;
+}
+.bold-right {
+    border-right: 2px solid black;
+}
