@@ -84,6 +84,7 @@ class Sudoku {
                 const [row, col, val] = change;
                 if (val > 0) {
                     allChanges = allChanges.concat(fillLogically(row, col, val));
+                    if (!isValid()) break;
                 }
             }
             return directChanges.concat(allChanges);
@@ -112,6 +113,7 @@ class Sudoku {
                         this.setCell(r, c, UNKNOWN);
                     }
                 }
+                this.setCell(row, col, UNKNOWN);
                 return false;
             }
 
@@ -146,32 +148,49 @@ class Sudoku {
                     if (possibilities[r][c].size === 0) {
                         return false;
                     }
-
-                    for (let i = 0; i < SIZE; ++i) {
-                        if (i !== r && this.grid[r][c] !== UNKNOWN && this.grid[i][c] !== UNKNOWN &&
-                            this.grid[r][c] === this.grid[i][c]) {
-                                return false;
-                        }
-                        if (i !== c && this.grid[r][c] !== UNKNOWN && this.grid[r][i] !== UNKNOWN &&
-                            this.grid[r][c] === this.grid[r][i]) {
-                                return false;
-                        }
-                    }
                 }
             }
+            for (let r = 0; r < SIZE; ++r) {
+                let used = Array(SIZE + 1); used.fill(false);
+                let possible = Array(SIZE + 1); possible.fill(false);
+                for (let c = 0; c < SIZE; ++c) {
+                    if (used[this.grid[r][c]]) return false;
+                    if (this.grid[r][c] !== UNKNOWN) used[this.grid[r][c]] = true;
+                    for (const n of possibilities[r][c]) {
+                        possible[n] = true;
+                    }
+                }
+                for (let n = 1; n <= SIZE; ++n) if (!possible[n]) return false;
+            }
+
+            for (let c = 0; c < SIZE; ++c) {
+                let used = Array(SIZE + 1); used.fill(false);
+                let possible = Array(SIZE + 1); possible.fill(false);
+                for (let r = 0; r < SIZE; ++r) {
+                    if (used[this.grid[r][c]]) return false;
+                    if (this.grid[r][c] !== UNKNOWN) used[this.grid[r][c]] = true;
+                    for (const n of possibilities[r][c]) {
+                        possible[n] = true;
+                    }
+                }
+                for (let n = 1; n <= SIZE; ++n) if (!possible[n]) return false;
+            }
+
             for (let sqRow = 0; sqRow < SIZE; sqRow += SQUARE_SIZE) {
                 for (let sqCol = 0; sqCol < SIZE; sqCol += SQUARE_SIZE) {
-                    let used = [];
-                    for (let n = 0; n <= SIZE; ++n) used.push(false);
+                    let used = Array(SIZE + 1); used.fill(false);
+                    let possible = Array(SIZE + 1); possible.fill(false);
                     for (let r = 0; r < SQUARE_SIZE; ++r) {
                         for (let c = 0; c < SQUARE_SIZE; ++c) {
                             const val = this.grid[sqRow + r][sqCol + c];
-                            if (used[val]) {
-                                return false;
-                            }
+                            if (used[val]) return false;
                             if (val !== UNKNOWN) used[val] = true;
+                            for (const n of possibilities[sqRow + r][sqCol + c]) {
+                                possible[n] = true;
+                            }
                         }
                     }
+                    for (let n = 1; n <= SIZE; ++n) if (!possible[n]) return false;
                 }
             }
             return true;
@@ -197,7 +216,6 @@ class Sudoku {
             }
         }
 
-
         if (!isValid()) {
             alert("Board invalid!");
             return;
@@ -211,8 +229,11 @@ class Sudoku {
                     if (backtrack(startRow, startCol, n)) {
                         return;
                     }
+                    this.setCell(startRow, startCol, UNKNOWN);
                 }
             }
         }
+
+        alert("Board invalid!");
     }
 }
