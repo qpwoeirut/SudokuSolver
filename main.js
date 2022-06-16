@@ -29,3 +29,8 @@ const solveSudoku = () => {
     const sudoku = new Sudoku();
     sudoku.solve();
 }
+const clearGrid = () => {
+    document.querySelectorAll(".sudoku-cell > input").forEach((elem) => {
+        elem.value = "";
+    })
+}
