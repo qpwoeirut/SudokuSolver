@@ -22,6 +22,7 @@ class Sudoku {
         this.grid[row][col] = val;
         const cell = document.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
         cell.value = val === UNKNOWN ? "" : val.toString();
+        cell.classList.add("blue");
     }
 
     solve() {
