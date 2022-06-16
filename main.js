@@ -17,7 +17,8 @@ for (let r = 0; r < SIZE; ++r) {
         input.min = "1";
         input.max = "9";
         input.oninput = () => {  // prevent multiple digits from being entered
-            while (input.value > SIZE) input.value = Math.floor(parseInt(input.value) / 10).toString()
+            while (input.value > SIZE) input.value = Math.floor(parseInt(input.value) / 10).toString();
+            input.classList.remove("blue");
         }
         cell.appendChild(input);
         container.appendChild(cell);
