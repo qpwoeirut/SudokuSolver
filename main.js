@@ -26,6 +26,5 @@ for (let r = 0; r < SIZE; ++r) {
 
 const solveSudoku = () => {
     const sudoku = new Sudoku();
-    sudoku.loadGrid();
     sudoku.solve();
 }
