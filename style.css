@@ -13,7 +13,7 @@
 }
 
 .sudoku-cell > input {
-    font-size: min(3rem, 8vmin);
+    font-size: min(2.4rem, 7vmin);
     -moz-appearance: textfield;
     appearance: textfield;
     width: 85%;
