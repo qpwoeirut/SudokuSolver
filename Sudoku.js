@@ -19,7 +19,6 @@ class Sudoku {
     }
 
     setCell(row, col, val) {
-        console.log("setCell", row, col, val);
         this.grid[row][col] = val;
         const cell = document.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
         cell.value = val === UNKNOWN ? "" : val.toString();
@@ -32,7 +31,6 @@ class Sudoku {
             if (possibilities[row][col].delete(val)) {
                 changes.push([row, col, -val]);
                 if (possibilities[row][col].size === 1) {
-                    console.log(row, col, val, Array.from(possibilities[row][col]));
                     let [newVal] = possibilities[row][col];
                     this.setCell(row, col, newVal);
                     changes.push([row, col, newVal]);
@@ -69,7 +67,6 @@ class Sudoku {
         }
 
         const fillLogically = (row, col, val) => {
-            console.log(row, col, val, JSON.parse(JSON.stringify(this.grid)))
             let directChanges = [];
             for (let n = 1; n <= SIZE; ++n) {
                 if (n !== val && possibilities[row][col].delete(n)) {
@@ -78,6 +75,7 @@ class Sudoku {
             }
 
             directChanges = directChanges.concat(updateRow(row, col, val)).concat(updateCol(row, col, val)).concat(updateSquare(row, col, val));
+            if (!isValid()) return directChanges;
 
             let allChanges = [];
 
@@ -102,13 +100,23 @@ class Sudoku {
         }
 
         const backtrack = (row, col, val) => {
-            console.log("backtrack", row, col, val)
             this.setCell(row, col, val);
             const changes = fillLogically(row, col, val);
+            if (!isValid()) {
+                for (const change of changes) {
+                    const [r, c, v] = change;
+                    if (v < 0) {
+                        possibilities[r][c].add(-v);
+                    } else {
+                        this.setCell(r, c, UNKNOWN);
+                    }
+                }
+                return false;
+            }
 
             const [nextRow, nextCol] = findUndeterminedCell();
             if (nextRow === -1) {
-                return isValid();
+                return true;
             }
             for (let n = 1; n <= SIZE; ++n) {
                 if (possibilities[nextRow][nextCol].has(n)) {
@@ -135,19 +143,16 @@ class Sudoku {
             for (let r = 0; r < SIZE; ++r) {
                 for (let c = 0; c < SIZE; ++c) {
                     if (possibilities[r][c].size === 0) {
-                        console.log("empty", r, c)
                         return false;
                     }
 
                     for (let i = 0; i < SIZE; ++i) {
                         if (i !== r && this.grid[r][c] !== UNKNOWN && this.grid[i][c] !== UNKNOWN &&
                             this.grid[r][c] === this.grid[i][c]) {
-                            console.log("match col", r, c, i);
                                 return false;
                         }
                         if (i !== c && this.grid[r][c] !== UNKNOWN && this.grid[r][i] !== UNKNOWN &&
                             this.grid[r][c] === this.grid[r][i]) {
-                            console.log("match row", r, c, i);
                                 return false;
                         }
                     }
@@ -161,7 +166,6 @@ class Sudoku {
                         for (let c = 0; c < SQUARE_SIZE; ++c) {
                             const val = this.grid[sqRow + r][sqCol + c];
                             if (used[val]) {
-                                console.log("match square", sqRow, sqCol, val);
                                 return false;
                             }
                             if (val !== UNKNOWN) used[val] = true;
